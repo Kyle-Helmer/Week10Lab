@@ -34,24 +34,20 @@ public class AdminFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpSession session = httpRequest.getSession();
         String email = (String) session.getAttribute("email");
+        UserDB db = new UserDB();
+        User user = db.get(email);
 
-        if (email == null) {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.sendRedirect("login");
-        } else {
-            UserDB db = new UserDB();
-            User user = db.get(email);
+
             if (user.getRole().getRoleId() == 1) {
-
                 chain.doFilter(request, response);
             } else {
                 HttpServletResponse httpResponse = (HttpServletResponse) response;
                 httpResponse.sendRedirect("notes");
             }
-        }
 
     }
 
